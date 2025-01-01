@@ -5,12 +5,13 @@ document.getElementById('check-btn').addEventListener('click', () => {
     const resultDiv = document.getElementById('result');
     const successAudio = document.getElementById('success-audio');
     const errorAudio = document.getElementById('error-audio');
+    const specialMessage = document.getElementById('special-message');
 
-    // Clear previous content
     reverseAnimation.innerHTML = '';
     finalWordDiv.textContent = '';
     resultDiv.textContent = '';
     document.body.className = '';
+    specialMessage.classList.add('hidden');
 
     if (!textInput.trim()) {
         alert('Please input a value');
@@ -21,7 +22,6 @@ document.getElementById('check-btn').addEventListener('click', () => {
     const cleanedText = originalText.toLowerCase().replace(/[^a-z0-9]/g, '');
     const reversedText = cleanedText.split('').reverse().join('');
 
-    // Create the reverse animation
     [...originalText].reverse().forEach((char, i) => {
         const span = document.createElement('span');
         span.textContent = char;
@@ -30,19 +30,27 @@ document.getElementById('check-btn').addEventListener('click', () => {
         reverseAnimation.appendChild(span);
     });
 
-    // Wait for animation to complete and display the full word
     setTimeout(() => {
         finalWordDiv.textContent = originalText;
 
-        // Check if it's a palindrome
         if (cleanedText === reversedText) {
             document.body.className = 'correct';
             resultDiv.innerHTML = `<div class="congratulations">${originalText} is a palindrome!</div>`;
+            resultDiv.classList.remove('hidden');
+            finalWordDiv.classList.remove('hidden');
             successAudio.play();
+        } else if (cleanedText === '2025') {
+            document.body.className = 'newYear';
+            resultDiv.classList.add('hidden');
+            finalWordDiv.classList.add('hidden');
+            reverseAnimation.innerHTML = '';
+            specialMessage.classList.remove('hidden');
         } else {
             document.body.className = 'incorrect';
             resultDiv.innerHTML = `<div class="failure">${originalText} is not a palindrome</div>`;
             errorAudio.play();
+            resultDiv.classList.remove('hidden');
+            finalWordDiv.classList.remove('hidden');
         }
     }, originalText.length * 300 + 500);
 });
